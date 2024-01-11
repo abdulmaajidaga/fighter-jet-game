@@ -11,13 +11,13 @@ pygame.display.set_caption("Fighter Jet Game")
 BACKGROUND = pygame.transform.scale(pygame.image.load("./pygame/BG.jpg"), (DISPLAY_WIDTH,DISPLAY_HEIGHT))
 
 FONT = pygame.font.SysFont("Georgia", 32)
-# delta_time = 0
+
 player_position = (0,0)
 SPACESHIP_HEIGHT = 60 
-SPACESHIP_WIDTH = 60
-SPACESHIP_VELOCITY = 10
-ASTEROID_HEIGHT = 20
-ASTEROID_WIDTH = 10
+SPACESHIP_WIDTH = 60 
+SPACESHIP_VELOCITY = 5
+ASTEROID_HEIGHT = 10
+ASTEROID_WIDTH = 5
 ASTEROID_VELOCITY = 3
 
 def draw(space_ship, elapsed_time, asteroids):
@@ -25,6 +25,7 @@ def draw(space_ship, elapsed_time, asteroids):
     text_time = FONT.render(f"Time : {round(elapsed_time)}s", 1, "white")
     DISPLAY.blit(text_time, (10,10))
     pygame.draw.rect(DISPLAY, "blue", space_ship)
+
     for ASTEROID in asteroids:
         pygame.draw.rect(DISPLAY, "red", ASTEROID)
 
@@ -35,7 +36,7 @@ def draw(space_ship, elapsed_time, asteroids):
 def main():
 
     running = True
-
+    # sprite = pygame.image.load("./pygame/fighter-jet-top-view-icon-by-Vexels.svg")
     space_ship = pygame.Rect(200, DISPLAY_HEIGHT-SPACESHIP_HEIGHT, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
 
     CLOCK = pygame.time.Clock()
