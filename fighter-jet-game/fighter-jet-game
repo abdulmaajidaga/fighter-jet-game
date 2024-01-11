@@ -2,6 +2,7 @@ import pygame
 import time
 import random
 
+
 pygame.init()
 
 DISPLAY_WIDTH, DISPLAY_HEIGHT = 1280, 720
@@ -13,22 +14,28 @@ BACKGROUND = pygame.transform.scale(pygame.image.load("./fighter-jet-game/BG.jpg
 FONT = pygame.font.SysFont("Georgia", 32)
 
 player_position = (0,0)
-SPACESHIP_HEIGHT = 60 
-SPACESHIP_WIDTH = 60 
+SPACESHIP_HEIGHT = 80
+SPACESHIP_WIDTH = 74.4
 SPACESHIP_VELOCITY = 5
 ASTEROID_HEIGHT = 10
 ASTEROID_WIDTH = 5
 ASTEROID_VELOCITY = 3
 
+class Sprite(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.transform.scale(pygame.image.load("./fighter-jet-game/fighter-jet-image.png"), (74.4, 80))
+        self.rect = pygame.Rect(200, DISPLAY_HEIGHT-SPACESHIP_HEIGHT, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
+
+
 def draw(space_ship, elapsed_time, asteroids):
     DISPLAY.blit(BACKGROUND, (0,0))
     text_time = FONT.render(f"Time : {round(elapsed_time)}s", 1, "white")
     DISPLAY.blit(text_time, (10,10))
-   
-    # space_ship_rect = space_ship.get_rect()
-    # DISPLAY.blit(space_ship, space_ship_rect)
+    # pygame.draw.rect(DISPLAY, "blue", space_ship)
     
-    pygame.draw.rect(DISPLAY, "blue", space_ship)
+
+    DISPLAY.blit(space_ship.image, space_ship.rect)
 
     for ASTEROID in asteroids:
         pygame.draw.rect(DISPLAY, "red", ASTEROID)
@@ -40,9 +47,9 @@ def draw(space_ship, elapsed_time, asteroids):
 def main():
 
     running = True
-    
-    space_ship = pygame.Rect(200, DISPLAY_HEIGHT-SPACESHIP_HEIGHT, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
-    # space_ship = pygame.image.load("./fighter-jet-game/fighter-jet-top-view-icon-by-Vexels.svg").convert_alpha()
+
+    # space_ship = pygame.Rect(200, DISPLAY_HEIGHT-SPACESHIP_HEIGHT, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
+    space_ship =  Sprite()
 
     CLOCK = pygame.time.Clock()
 
@@ -74,20 +81,20 @@ def main():
 
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_w] and space_ship.y - SPACESHIP_VELOCITY >= 0:
-            space_ship.y -= SPACESHIP_VELOCITY
-        if keys[pygame.K_s] and space_ship.y + SPACESHIP_VELOCITY + SPACESHIP_HEIGHT <= DISPLAY_HEIGHT:
-            space_ship.y += SPACESHIP_VELOCITY
-        if keys[pygame.K_a] and space_ship.x - SPACESHIP_VELOCITY >= 0:
-            space_ship.x -= SPACESHIP_VELOCITY
-        if keys[pygame.K_d] and space_ship.x + SPACESHIP_VELOCITY + SPACESHIP_WIDTH <= DISPLAY_WIDTH:
-            space_ship.x += SPACESHIP_VELOCITY
+        if keys[pygame.K_w] and space_ship.rect.y - SPACESHIP_VELOCITY >= 0:
+            space_ship.rect.y -= SPACESHIP_VELOCITY
+        if keys[pygame.K_s] and space_ship.rect.y + SPACESHIP_VELOCITY + SPACESHIP_HEIGHT <= DISPLAY_HEIGHT:
+            space_ship.rect.y += SPACESHIP_VELOCITY
+        if keys[pygame.K_a] and space_ship.rect.x - SPACESHIP_VELOCITY >= 0:
+            space_ship.rect.x -= SPACESHIP_VELOCITY
+        if keys[pygame.K_d] and space_ship.rect.x + SPACESHIP_VELOCITY + SPACESHIP_WIDTH <= DISPLAY_WIDTH:
+            space_ship.rect.x += SPACESHIP_VELOCITY
 
         for ASTEROID in asteroids[:]:
             ASTEROID.y += ASTEROID_VELOCITY
             if  ASTEROID.y > DISPLAY_HEIGHT:
                 asteroids.remove(ASTEROID)
-            elif ASTEROID.y + ASTEROID_HEIGHT >= space_ship.y and ASTEROID.colliderect(space_ship):
+            elif ASTEROID.y + ASTEROID_HEIGHT >= space_ship.rect.y and ASTEROID.colliderect(space_ship):
                 asteroids.remove(ASTEROID)
                 crashed = True
                 break
