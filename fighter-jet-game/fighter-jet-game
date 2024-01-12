@@ -11,7 +11,7 @@ DISPLAY = pygame.display.set_mode((DISPLAY_WIDTH,DISPLAY_HEIGHT))
 pygame.display.set_caption("Fighter Jet Game")
 BACKGROUND = pygame.transform.scale(pygame.image.load("./fighter-jet-game/BG.jpg"), (DISPLAY_WIDTH,DISPLAY_HEIGHT))
 
-FONT = pygame.font.SysFont("Georgia", 32)
+FONT = pygame.font.SysFont("centaur", 32)
 
 player_position = (0,0)
 SPACESHIP_HEIGHT = 60
@@ -28,45 +28,46 @@ class Sprite(pygame.sprite.Sprite):
         self.rect = pygame.Rect(200, DISPLAY_HEIGHT-SPACESHIP_HEIGHT, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
 
 
-def draw(space_ship, elapsed_time, asteroids):
-    DISPLAY.blit(BACKGROUND, (0,0))
-    text_time = FONT.render(f"Time : {round(elapsed_time)}s", 1, "white")
-    DISPLAY.blit(text_time, (10,10))
-    # pygame.draw.rect(DISPLAY, "blue", space_ship)
-    
-
-    DISPLAY.blit(space_ship.image, space_ship.rect)
-    ASTEROID_IMAGE = pygame.transform.scale(pygame.image.load("./fighter-jet-game/missile_image.png"), (10, 40))
-
-    for ASTEROID in asteroids:
-        DISPLAY.blit(ASTEROID_IMAGE, ASTEROID)
-
-    pygame.display.update()
-
-
-
 def main():
 
-    running = True
+   
+    ASTEROID_IMAGE = pygame.transform.scale(pygame.image.load("./fighter-jet-game/missile-image.png").convert_alpha(), (10, 40))
+    ASTEROID_MASK = pygame.mask.from_surface(ASTEROID_IMAGE)
+    spaceship = pygame.transform.scale(pygame.image.load("./fighter-jet-game/fighter-jet-image.png").convert_alpha(), (74.4, 80))
+    SPACE_SHIP_MASK = pygame.mask.from_surface(spaceship)
+    MASK_IMAGE = SPACE_SHIP_MASK.to_surface()
+    bullet = pygame.Surface((10,10))
+    bullet.fill("Red")
+    bullet_mask = pygame.mask.from_surface(bullet)
 
-    # space_ship = pygame.Rect(200, DISPLAY_HEIGHT-SPACESHIP_HEIGHT, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
+    
     space_ship =  Sprite()
 
     CLOCK = pygame.time.Clock()
-
     start_time = time.time()
     elapsed_time = 0
-
+    text_time = FONT.render(f"Time : {round(elapsed_time)}s", 1, "white")
+    
     asteroid_increase = 1000
     asteroid_count = 0
     asteroids = []
+
     crashed = False
+    running = True
 
     while running:
-
+        pos = pygame.mouse.get_pos()
         elapsed_time = time.time() - start_time
         asteroid_count += CLOCK.tick(60)
         
+
+        if SPACE_SHIP_MASK.overlap(bullet_mask, (pos[0] - space_ship.rect.x, pos[1] - space_ship.rect.y)):
+            col = "red"
+        else:
+            col = "green"
+        bullet.fill(col)
+
+
         if asteroid_count > asteroid_increase:
             for _ in range(3):
                 asteroid_x = random.randint(0, DISPLAY_WIDTH - ASTEROID_WIDTH)
@@ -108,8 +109,17 @@ def main():
             pygame.display.update()
             pygame.time.delay(5000)
             break   
+        # DISPLAY.blit()
+        DISPLAY.blit(BACKGROUND, (0,0))
+        DISPLAY.blit(text_time, (10,10))
+        DISPLAY.blit(space_ship.image, space_ship.rect)
+        DISPLAY.blit(bullet, pos)
 
-        draw(space_ship, elapsed_time, asteroids)
+        for ASTEROID in asteroids:
+            DISPLAY.blit(ASTEROID_IMAGE, ASTEROID)
+        
+
+        pygame.display.update()
     
     pygame.quit()
     
