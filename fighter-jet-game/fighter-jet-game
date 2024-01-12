@@ -14,8 +14,8 @@ BACKGROUND = pygame.transform.scale(pygame.image.load("./fighter-jet-game/BG.jpg
 FONT = pygame.font.SysFont("Georgia", 32)
 
 player_position = (0,0)
-SPACESHIP_HEIGHT = 80
-SPACESHIP_WIDTH = 74.4
+SPACESHIP_HEIGHT = 60
+SPACESHIP_WIDTH = 50
 SPACESHIP_VELOCITY = 5
 ASTEROID_HEIGHT = 10
 ASTEROID_WIDTH = 5
@@ -24,7 +24,7 @@ ASTEROID_VELOCITY = 3
 class Sprite(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.transform.scale(pygame.image.load("./fighter-jet-game/fighter-jet-image.png"), (74.4, 80))
+        self.image = pygame.transform.scale(pygame.image.load("./fighter-jet-game/fighter-jet-image.png").convert_alpha(), (74.4, 80))
         self.rect = pygame.Rect(200, DISPLAY_HEIGHT-SPACESHIP_HEIGHT, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
 
 
@@ -36,9 +36,10 @@ def draw(space_ship, elapsed_time, asteroids):
     
 
     DISPLAY.blit(space_ship.image, space_ship.rect)
+    ASTEROID_IMAGE = pygame.transform.scale(pygame.image.load("./fighter-jet-game/missile_image.png"), (10, 40))
 
     for ASTEROID in asteroids:
-        pygame.draw.rect(DISPLAY, "red", ASTEROID)
+        DISPLAY.blit(ASTEROID_IMAGE, ASTEROID)
 
     pygame.display.update()
 
@@ -67,9 +68,9 @@ def main():
         asteroid_count += CLOCK.tick(60)
         
         if asteroid_count > asteroid_increase:
-            for _ in range(2):
+            for _ in range(3):
                 asteroid_x = random.randint(0, DISPLAY_WIDTH - ASTEROID_WIDTH)
-                ASTEROID = pygame.Rect(asteroid_x, -ASTEROID_HEIGHT, ASTEROID_HEIGHT, ASTEROID_HEIGHT)
+                ASTEROID = pygame.Rect(asteroid_x, -ASTEROID_HEIGHT, ASTEROID_WIDTH, ASTEROID_HEIGHT)
                 asteroids.append(ASTEROID)
             asteroid_increase = max(200, asteroid_increase - 50)
             asteroid_count = 0
