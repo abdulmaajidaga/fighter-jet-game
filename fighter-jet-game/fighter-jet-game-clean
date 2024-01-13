@@ -1,0 +1,107 @@
+import pygame
+import random
+
+pygame.init()
+
+display_width = 1280
+display_height = 720
+display = pygame.display.set_mode((display_width, display_height))
+pygame.display.set_caption("Fighter Jet Game 2.0")
+background = pygame.transform.scale(pygame.image.load("./fighter-jet-game/BG.jpg"), (display_width, display_height))
+
+font = pygame.font.SysFont("centaur", 32)
+clock = pygame.time.Clock()
+
+jet_image = pygame.transform.scale(pygame.image.load("./fighter-jet-game/fighter-jet-image.png").convert_alpha(), (150, 160))
+missile_image = pygame.transform.scale(pygame.image.load("./fighter-jet-game/missile-image.png").convert_alpha(), (20, 80))
+
+jet_width = 50
+jet_height = 60
+jet_velocity = 5
+missile_velocity = 3
+
+grey = (128, 128, 128)
+
+
+class Jet(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = jet_image
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        self.mask = pygame.mask.from_surface(self.image)
+
+    def draw(self):
+        display.blit(self.image, self.rect)
+
+    def update(self):
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_w] and self.rect.y > 0:
+            self.rect.y -= jet_velocity
+        if keys[pygame.K_s] and self.rect.y < display_height - jet_height:
+            self.rect.y += jet_velocity
+        if keys[pygame.K_a] and self.rect.x > 0:
+            self.rect.x -= jet_velocity
+        if keys[pygame.K_d] and self.rect.x < display_width - jet_width:
+            self.rect.x += jet_velocity
+
+
+class Missile(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = missile_image
+        self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image)
+        self.rect.x = random.randint(0, display_width - self.rect.width)
+        self.rect.y = 0
+
+    def draw(self):
+        display.blit(self.image, self.rect)
+
+    def update(self):
+        self.rect.y += missile_velocity
+        if self.rect.y > display_height:
+            self.rect.y = 0
+            self.rect.x = random.randint(0, display_width - self.rect.width)
+
+
+jet = Jet(display_width / 2, display_height / 2)
+missile_group = pygame.sprite.Group()
+jet_group = pygame.sprite.Group()
+jet_group.add(jet)
+
+for _ in range(5): 
+    missile = Missile()
+    missile_group.add(missile)
+
+running = True
+while running:
+    display.blit(background, (0, 0))
+    jet.draw()
+    jet.update()
+
+    for missile in missile_group:
+        missile.draw()
+        missile.update()
+
+        if pygame.sprite.spritecollide(jet, missile_group, False, pygame.sprite.collide_mask):
+            text_lost = font.render("You Lost the Game!", 1, "white")
+            display.blit(text_lost, (display_width / 2 - text_lost.get_width() / 2,
+                                     display_height / 2 - text_lost.get_height() / 2))
+            pygame.display.update()
+            pygame.time.delay(5000)
+            running = False
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    pygame.display.flip()
+    clock.tick(60)
+
+pygame.quit()
+
+
+
+

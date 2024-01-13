@@ -56,16 +56,10 @@ def main():
     running = True
 
     while running:
-        pos = pygame.mouse.get_pos()
+        
         elapsed_time = time.time() - start_time
         asteroid_count += CLOCK.tick(60)
         
-
-        if SPACE_SHIP_MASK.overlap(bullet_mask, (pos[0] - space_ship.rect.x, pos[1] - space_ship.rect.y)):
-            col = "red"
-        else:
-            col = "green"
-        bullet.fill(col)
 
 
         if asteroid_count > asteroid_increase:
@@ -92,14 +86,7 @@ def main():
         if keys[pygame.K_d] and space_ship.rect.x + SPACESHIP_VELOCITY + SPACESHIP_WIDTH <= DISPLAY_WIDTH:
             space_ship.rect.x += SPACESHIP_VELOCITY
 
-        for ASTEROID in asteroids[:]:
-            ASTEROID.y += ASTEROID_VELOCITY
-            if  ASTEROID.y > DISPLAY_HEIGHT:
-                asteroids.remove(ASTEROID)
-            elif ASTEROID.y + ASTEROID_HEIGHT >= space_ship.rect.y and ASTEROID.colliderect(space_ship):
-                asteroids.remove(ASTEROID)
-                crashed = True
-                break
+        
 
 
 
