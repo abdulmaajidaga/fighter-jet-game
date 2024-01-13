@@ -100,7 +100,7 @@ def main():
         DISPLAY.blit(BACKGROUND, (0,0))
         DISPLAY.blit(text_time, (10,10))
         DISPLAY.blit(space_ship.image, space_ship.rect)
-        DISPLAY.blit(bullet, pos)
+      
 
         for ASTEROID in asteroids:
             DISPLAY.blit(ASTEROID_IMAGE, ASTEROID)

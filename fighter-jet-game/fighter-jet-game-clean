@@ -69,7 +69,7 @@ missile_group = pygame.sprite.Group()
 jet_group = pygame.sprite.Group()
 jet_group.add(jet)
 
-for _ in range(15): 
+for _ in range(20): 
     missile = Missile()
     missile_group.add(missile)
 
@@ -96,7 +96,7 @@ while running:
             running = False
 
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(120)
 
 pygame.quit()
 
