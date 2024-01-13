@@ -15,12 +15,10 @@ clock = pygame.time.Clock()
 jet_image = pygame.transform.scale(pygame.image.load("./fighter-jet-game/fighter-jet-image.png").convert_alpha(), (150, 160))
 missile_image = pygame.transform.scale(pygame.image.load("./fighter-jet-game/missile-image.png").convert_alpha(), (20, 80))
 
-jet_width = 50
-jet_height = 60
-jet_velocity = 5
+jet_width = 150
+jet_height = 160
+jet_velocity = 7
 missile_velocity = 3
-
-grey = (128, 128, 128)
 
 
 class Jet(pygame.sprite.Sprite):
@@ -54,7 +52,7 @@ class Missile(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         self.rect.x = random.randint(0, display_width - self.rect.width)
-        self.rect.y = 0
+        self.rect.y = random.randint(-display_height, 0)  # Start missiles off-screen
 
     def draw(self):
         display.blit(self.image, self.rect)
@@ -62,7 +60,7 @@ class Missile(pygame.sprite.Sprite):
     def update(self):
         self.rect.y += missile_velocity
         if self.rect.y > display_height:
-            self.rect.y = 0
+            self.rect.y = random.randint(-display_height, 0)
             self.rect.x = random.randint(0, display_width - self.rect.width)
 
 
@@ -71,7 +69,7 @@ missile_group = pygame.sprite.Group()
 jet_group = pygame.sprite.Group()
 jet_group.add(jet)
 
-for _ in range(5): 
+for _ in range(15): 
     missile = Missile()
     missile_group.add(missile)
 
@@ -90,7 +88,7 @@ while running:
             display.blit(text_lost, (display_width / 2 - text_lost.get_width() / 2,
                                      display_height / 2 - text_lost.get_height() / 2))
             pygame.display.update()
-            pygame.time.delay(5000)
+            pygame.time.delay(0)
             running = False
 
     for event in pygame.event.get():
